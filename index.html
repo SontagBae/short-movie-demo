@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShortTube - Short Video Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .video-container {
+            height: calc(100vh - 56px);
+            max-height: 1000px;
+        }
+        .video-player {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        .progress-container {
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: white;
+            transition: width 0.1s linear;
+        }
+        .action-btn {
+            transition: transform 0.2s ease;
+        }
+        .action-btn:active {
+            transform: scale(1.2);
+        }
+        .comment-input {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .comment-input:focus {
+            outline: none;
+            border-bottom: 1px solid white;
+        }
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+        }
+        .video-item {
+            scroll-snap-align: start;
+        }
+        .skeleton-loader {
+            background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-black bg-opacity-80 backdrop-blur-sm z-50 flex justify-between items-center px-4 py-3 border-b border-gray-800">
+        <div class="flex items-center">
+            <i class="fas fa-play-circle text-red-500 text-2xl mr-2"></i>
+            <h1 class="text-xl font-bold">ShortTube</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="p-2 rounded-full hover:bg-gray-800">
+                <i class="fas fa-search"></i>
+            </button>
+            <button class="p-2 rounded-full hover:bg-gray-800">
+                <i class="fas fa-ellipsis-vertical"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content - Video Feed -->
+    <main class="scroll-container overflow-y-auto pt-14 pb-16">
+        <!-- Video 1 -->
+        <div class="video-item video-container relative w-full flex flex-col">
+            <!-- Video Player -->
+            <div class="flex-1 relative">
+                <video class="video-player w-full h-full" loop autoplay muted>
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" type="video/mp4">
+                </video>
+                
+                <!-- Progress Bar -->
+                <div class="absolute top-0 left-0 right-0 px-2 pt-1">
+                    <div class="progress-container w-full rounded-full">
+                        <div class="progress-bar w-1/3 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <!-- Video Info -->
+                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile" class="w-8 h-8 rounded-full mr-2">
+                                <span class="font-semibold">@travelguy</span>
+                            </div>
+                            <p class="text-sm mb-2">Beautiful sunset at the beach today! 🌅 #travel #sunset</p>
+                            <div class="flex items-center text-xs text-gray-400">
+                                <span class="mr-3"><i class="fas fa-music mr-1"></i> Original Sound</span>
+                                <span>12.5K views</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center space-y-4 ml-4">
+                            <!-- Like Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="fas fa-heart text-2xl"></i>
+                                <span class="text-xs">24.5K</span>
+                            </button>
+                            
+                            <!-- Comment Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="fas fa-comment text-2xl"></i>
+                                <span class="text-xs">1.2K</span>
+                            </button>
+                            
+                            <!-- Share Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="fas fa-share text-2xl"></i>
+                                <span class="text-xs">Share</span>
+                            </button>
+                            
+                            <!-- More Button -->
+                            <button class="action-btn">
+                                <i class="fas fa-ellipsis-vertical text-2xl"></i>
+                            </button>
+                            
+                            <!-- Profile Image -->
+                            <div class="relative">
+                                <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-white">
+                                <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                                    <i class="fas fa-plus text-white text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-item video-container relative w-full flex flex-col">
+            <!-- Video Player -->
+            <div class="flex-1 relative">
+                <video class="video-player w-full h-full" loop autoplay muted>
+                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                </video>
+                
+                <!-- Progress Bar -->
+                <div class="absolute top-0 left-0 right-0 px-2 pt-1">
+                    <div class="progress-container w-full rounded-full">
+                        <div class="progress-bar w-2/3 rounded-full"></div>
+                    </div>
+                </div>
+                
+                <!-- Video Info -->
+                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center mb-2">
+                                <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Profile" class="w-8 h-8 rounded-full mr-2">
+                                <span class="font-semibold">@foodlover</span>
+                            </div>
+                            <p class="text-sm mb-2">Making my famous chocolate cake recipe! 🍫🎂 #baking #dessert</p>
+                            <div class="flex items-center text-xs text-gray-400">
+                                <span class="mr-3"><i class="fas fa-music mr-1"></i> Cooking ASMR</span>
+                                <span>45.2K views</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center space-y-4 ml-4">
+                            <!-- Like Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="far fa-heart text-2xl"></i>
+                                <span class="text-xs">32.1K</span>
+                            </button>
+                            
+                            <!-- Comment Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="far fa-comment text-2xl"></i>
+                                <span class="text-xs">2.4K</span>
+                            </button>
+                            
+                            <!-- Share Button -->
+                            <button class="action-btn flex flex-col items-center">
+                                <i class="fas fa-share text-2xl"></i>
+                                <span class="text-xs">Share</span>
+                            </button>
+                            
+                            <!-- More Button -->
+                            <button class="action-btn">
+                                <i class="fas fa-ellipsis-vertical text-2xl"></i>
+                            </button>
+                            
+                            <!-- Profile Image -->
+                            <div class="relative">
+                                <img src="https://randomuser.me/api/portraits/men/2.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-white">
+                                <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                                    <i class="fas fa-plus text-white text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video 3 (Loading Skeleton) -->
+        <div class="video-item video-container relative w-full flex flex-col">
+            <div class="flex-1 relative skeleton-loader"></div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black bg-opacity-80 backdrop-blur-sm z-50 flex justify-around items-center px-4 py-3 border-t border-gray-800">
+        <button class="flex flex-col items-center text-white">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-xs mt-1">Home</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500">
+            <i class="fas fa-compass text-xl"></i>
+            <span class="text-xs mt-1">Discover</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500">
+            <i class="fas fa-plus-square text-xl"></i>
+            <span class="text-xs mt-1">Create</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500">
+            <i class="fas fa-inbox text-xl"></i>
+            <span class="text-xs mt-1">Inbox</span>
+        </button>
+        <button class="flex flex-col items-center text-gray-500">
+            <i class="fas fa-user text-xl"></i>
+            <span class="text-xs mt-1">Profile</span>
+        </button>
+    </nav>
+
+    <!-- Comment Modal -->
+    <div id="comment-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+            <h2 class="text-lg font-semibold">Comments (1.2K)</h2>
+            <button id="close-comment-modal" class="p-2">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto px-4 py-2">
+            <!-- Comment List -->
+            <div class="flex mb-4">
+                <img src="https://randomuser.me/api/portraits/men/3.jpg" alt="Profile" class="w-10 h-10 rounded-full mr-3">
+                <div>
+                    <div class="flex items-center mb-1">
+                        <span class="font-semibold mr-2">user123</span>
+                        <span class="text-xs text-gray-400">2h ago</span>
+                    </div>
+                    <p class="text-sm">This is amazing! Where was this filmed?</p>
+                    <div class="flex items-center mt-2">
+                        <button class="text-gray-400 mr-3">
+                            <i class="far fa-heart mr-1"></i> 24
+                        </button>
+                        <button class="text-gray-400">
+                            <i class="far fa-comment mr-1"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex mb-4">
+                <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Profile" class="w-10 h-10 rounded-full mr-3">
+                <div>
+                    <div class="flex items-center mb-1">
+                        <span class="font-semibold mr-2">travelfan</span>
+                        <span class="text-xs text-gray-400">1h ago</span>
+                    </div>
+                    <p class="text-sm">I've been there! The sunset is even more beautiful in person 😍</p>
+                    <div class="flex items-center mt-2">
+                        <button class="text-gray-400 mr-3">
+                            <i class="far fa-heart mr-1"></i> 12
+                        </button>
+                        <button class="text-gray-400">
+                            <i class="far fa-comment mr-1"></i> Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- More comments would appear here -->
+        </div>
+        
+        <div class="p-4 border-t border-gray-800">
+            <div class="flex items-center">
+                <img src="https://randomuser.me/api/portraits/men/4.jpg" alt="Profile" class="w-10 h-10 rounded-full mr-3">
+                <div class="flex-1 relative">
+                    <input type="text" placeholder="Add a comment..." class="comment-input w-full bg-transparent py-2 px-1 text-white placeholder-gray-500">
+                    <button class="absolute right-0 top-1/2 transform -translate-y-1/2 text-blue-400 font-semibold">
+                        Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
+            <h2 class="text-lg font-semibold">Share</h2>
+            <button id="close-share-modal" class="p-2">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto px-4 py-4">
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fab fa-whatsapp text-2xl text-green-500"></i>
+                    </div>
+                    <span class="text-xs">WhatsApp</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fab fa-facebook text-2xl text-blue-500"></i>
+                    </div>
+                    <span class="text-xs">Facebook</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fab fa-twitter text-2xl text-blue-400"></i>
+                    </div>
+                    <span class="text-xs">Twitter</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fab fa-instagram text-2xl text-pink-500"></i>
+                    </div>
+                    <span class="text-xs">Instagram</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fas fa-envelope text-2xl text-gray-300"></i>
+                    </div>
+                    <span class="text-xs">Email</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fas fa-link text-2xl text-gray-300"></i>
+                    </div>
+                    <span class="text-xs">Copy Link</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fas fa-qrcode text-2xl text-gray-300"></i>
+                    </div>
+                    <span class="text-xs">QR Code</span>
+                </button>
+                
+                <button class="flex flex-col items-center">
+                    <div class="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center mb-1">
+                        <i class="fas fa-code text-2xl text-gray-300"></i>
+                    </div>
+                    <span class="text-xs">Embed</span>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="font-semibold mb-2">Suggested</h3>
+                <div class="flex space-x-4 overflow-x-auto pb-2">
+                    <div class="flex flex-col items-center flex-shrink-0">
+                        <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="Profile" class="w-14 h-14 rounded-full mb-1">
+                        <span class="text-xs">@jenny</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0">
+                        <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="Profile" class="w-14 h-14 rounded-full mb-1">
+                        <span class="text-xs">@mike</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0">
+                        <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Profile" class="w-14 h-14 rounded-full mb-1">
+                        <span class="text-xs">@sarah</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0">
+                        <img src="https://randomuser.me/api/portraits/men/6.jpg" alt="Profile" class="w-14 h-14 rounded-full mb-1">
+                        <span class="text-xs">@david</span>
+                    </div>
+                    <div class="flex flex-col items-center flex-shrink-0">
+                        <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Profile" class="w-14 h-14 rounded-full mb-1">
+                        <span class="text-xs">@lisa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t border-gray-800">
+            <button class="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-semibold">
+                More sharing options
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const videos = document.querySelectorAll('video');
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const commentModal = document.getElementById('comment-modal');
+        const closeCommentModal = document.getElementById('close-comment-modal');
+        const shareModal = document.getElementById('share-modal');
+        const closeShareModal = document.getElementById('close-share-modal');
+        const commentButtons = document.querySelectorAll('.fa-comment, .fa-comment-dots');
+        const shareButtons = document.querySelectorAll('.fa-share');
+        const likeButtons = document.querySelectorAll('.fa-heart, .fa-heart-broken');
+        
+        // Video progress tracking
+        videos.forEach((video, index) => {
+            video.addEventListener('timeupdate', () => {
+                const progress = (video.currentTime / video.duration) * 100;
+                progressBars[index].style.width = `${progress}%`;
+            });
+            
+            video.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+        });
+        
+        // Comment modal
+        commentButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                commentModal.classList.remove('hidden');
+            });
+        });
+        
+        closeCommentModal.addEventListener('click', () => {
+            commentModal.classList.add('hidden');
+        });
+        
+        // Share modal
+        shareButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                shareModal.classList.remove('hidden');
+            });
+        });
+        
+        closeShareModal.addEventListener('click', () => {
+            shareModal.classList.add('hidden');
+        });
+        
+        // Like button toggle
+        likeButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (button.classList.contains('far')) {
+                    button.classList.remove('far');
+                    button.classList.add('fas');
+                } else {
+                    button.classList.remove('fas');
+                    button.classList.add('far');
+                }
+            });
+        });
+        
+        // Simulate loading more videos when scrolling to bottom
+        const mainContent = document.querySelector('main');
+        mainContent.addEventListener('scroll', () => {
+            if (mainContent.scrollHeight - mainContent.scrollTop === mainContent.clientHeight) {
+                // Load more videos
+                setTimeout(() => {
+                    const loadingSkeleton = document.querySelector('.skeleton-loader');
+                    if (loadingSkeleton) {
+                        loadingSkeleton.innerHTML = `
+                            <video class="video-player w-full h-full" loop autoplay muted>
+                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" type="video/mp4">
+                            </video>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black to-transparent">
+                                <div class="flex items-start">
+                                    <div class="flex-1">
+                                        <div class="flex items-center mb-2">
+                                            <img src="https://randomuser.me/api/portraits/men/7.jpg" alt="Profile" class="w-8 h-8 rounded-full mr-2">
+                                            <span class="font-semibold">@adventurer</span>
+                                        </div>
+                                        <p class="text-sm mb-2">Climbing mountains this weekend! 🏔️ #adventure #outdoors</p>
+                                        <div class="flex items-center text-xs text-gray-400">
+                                            <span class="mr-3"><i class="fas fa-music mr-1"></i> Epic Adventure</span>
+                                            <span>8.7K views</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-center space-y-4 ml-4">
+                                        <button class="action-btn flex flex-col items-center">
+                                            <i class="far fa-heart text-2xl"></i>
+                                            <span class="text-xs">5.3K</span>
+                                        </button>
+                                        <button class="action-btn flex flex-col items-center">
+                                            <i class="far fa-comment text-2xl"></i>
+                                            <span class="text-xs">423</span>
+                                        </button>
+                                        <button class="action-btn flex flex-col items-center">
+                                            <i class="fas fa-share text-2xl"></i>
+                                            <span class="text-xs">Share</span>
+                                        </button>
+                                        <button class="action-btn">
+                                            <i class="fas fa-ellipsis-vertical text-2xl"></i>
+                                        </button>
+                                        <div class="relative">
+                                            <img src="https://randomuser.me/api/portraits/women/7.jpg" alt="Profile" class="w-10 h-10 rounded-full border-2 border-white">
+                                            <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 bg-red-500 rounded-full w-4 h-4 flex items-center justify-center">
+                                                <i class="fas fa-plus text-white text-xs"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        loadingSkeleton.classList.remove('skeleton-loader');
+                        
+                        // Add another loading skeleton at the end
+                        const newVideoItem = document.createElement('div');
+                        newVideoItem.className = 'video-item video-container relative w-full flex flex-col';
+                        newVideoItem.innerHTML = `
+                            <div class="flex-1 relative skeleton-loader"></div>
+                        `;
+                        mainContent.appendChild(newVideoItem);
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
